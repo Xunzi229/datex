@@ -1,0 +1,22 @@
+!logs/.keep
+logs/*
+!log/.keep
+log/*
+*.DS_Store
+nohup.out
+go.sum
+.idea/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.nohup
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+*~
+*#
