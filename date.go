@@ -20,7 +20,7 @@ func (t *DateX) Scan(value interface{}) error {
         return nil
     }
     t.At, t.Valid = value.(time.Time)
-    if t.Valid {
+    if !t.Valid {
         err = fmt.Errorf("value is not time.Time, value: %v", value)
     }
     return err
@@ -40,14 +40,6 @@ func (t DateX) Value() (driver.Value, error) {
 
 func NewDateX(t time.Time) DateX {
     return DateX{At: time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location()), Valid: true}
-}
-
-func LoadDateByLayout(str string, layout string) DateX {
-    tx, err := time.ParseInLocation(layout, str, time.Local)
-    if err != nil {
-        return DateX{Valid: false}
-    }
-    return NewDateX(tx)
 }
 
 func LoadDateByYmd(t string) DateX {

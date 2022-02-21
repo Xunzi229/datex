@@ -21,19 +21,13 @@ type TimeX struct {
 // 实现 sql.Scanner 接口，Scan 将 value 扫描至 Jsonb
 func (t *TimeX) Scan(value interface{}) error {
     var err error
-    var ok bool
     
     if value == nil {
         t.At, t.Valid = time.Time{}, false
         return nil
     }
-    t.Valid = true
-    
-    if value == nil {
-        return nil
-    }
-    t.At, ok = value.(time.Time)
-    if !ok {
+    t.At, t.Valid = value.(time.Time)
+    if !t.Valid {
         err = fmt.Errorf("value is not time.Time, value: %v", value)
     }
     return err
@@ -55,8 +49,8 @@ func NewTimeX(t time.Time) TimeX {
     return TimeX{At: t, Valid: true}
 }
 
-func LoadTimeByLayout(str string, layout string) TimeX {
-    tx, err := time.ParseInLocation(layout, str, time.Local)
+func LoadTimeByLayout(t string, layout string) TimeX {
+    tx, err := time.ParseInLocation(layout, t, time.Local)
     if err != nil {
         return TimeX{Valid: false}
     }
@@ -64,7 +58,7 @@ func LoadTimeByLayout(str string, layout string) TimeX {
 }
 
 func LoadTimeByYmd(t string) TimeX {
-    tx, err := time.ParseInLocation(DateLayout, t, time.Local)
+    tx, err := time.ParseInLocation(TimeLayout, t, time.Local)
     if err != nil {
         return TimeX{Valid: false}
     }
@@ -89,10 +83,6 @@ func (t *TimeX) UnmarshalJSON(data []byte) error {
 
 func (t *TimeX) AddDate(years int, months int, days int) time.Time {
     return t.At.AddDate(years, months, days)
-}
-
-func (t *TimeX) Add(years int, months int, days int) TimeX {
-    return NewTimeX(t.AddDate(years, months, days))
 }
 
 func (t *TimeX) Format(layout string) string {
